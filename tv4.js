@@ -636,6 +636,15 @@ ValidatorContext.prototype.validateAll = function (data, schema, dataPathParts, 
 	return this.handleError(error);
 };
 ValidatorContext.prototype.validateFormat = function (data, schema) {
+	var allowedTypes = schema.type;
+	if (!Array.isArray(allowedTypes)) {
+		allowedTypes = [allowedTypes];
+	}
+
+	if (data === null && allowedTypes.indexOf('null') !== -1) {
+		return null;
+	}
+
 	if (typeof schema.format !== 'string' || !this.formatValidators[schema.format]) {
 		return null;
 	}
@@ -1675,3 +1684,4 @@ tv4.tv4 = tv4;
 return tv4; // used by _header.js to globalise.
 
 }));
+//@ sourceMappingURL=tv4.js.map
