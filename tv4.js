@@ -730,6 +730,18 @@ ValidatorContext.prototype.validateBasic = function validateBasic(data, schema, 
 	if (error = this.validateType(data, schema, dataPointerPath)) {
 		return error.prefixWith(null, "type");
 	}
+
+	var dataType = typeof data;
+	if (data === null) {
+		dataType = "null";
+	} else if (Array.isArray(data)) {
+		dataType = "array";
+	}
+
+	if (dataType === "null" || dataType === "undefined") {
+		return null;
+	}
+
 	if (error = this.validateEnum(data, schema, dataPointerPath)) {
 		return error.prefixWith(null, "type");
 	}
@@ -998,7 +1010,7 @@ ValidatorContext.prototype.validateObjectRequiredProperties = function validateO
 	if (schema.required !== undefined) {
 		for (var i = 0; i < schema.required.length; i++) {
 			var key = schema.required[i];
-			if (data[key] === undefined) {
+			if (data[key] === undefined || data[key] === null) {
 				var error = this.createError(ErrorCodes.OBJECT_REQUIRED, {key: key}, '', '/required/' + i, null, data, schema);
 				if (this.handleError(error)) {
 					return error;
